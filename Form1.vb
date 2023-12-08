@@ -9,7 +9,7 @@ Public Class Form1
             Dim openFileDialog As New OpenFileDialog With {
                 .Title = "Select Cheat File",
                 .Filter = "Cheat Files (*.DCT)|*.DCT",
-                .InitialDirectory = "E:\Emulator's\DS\DeSmuMe\Cheats"
+                .InitialDirectory = "E:\Emulator's\DS\DeSmuMe\Cheats"'This will be dynamic when project is finished
             }
 
             If openFileDialog.ShowDialog() = DialogResult.OK Then
@@ -46,7 +46,7 @@ Public Class Form1
                 Dim saveFileDialog As New SaveFileDialog With {
                     .Title = "Save Converted Cheat File",
                     .Filter = "Cheat Files (*.MCH)|*.MCH",
-                    .InitialDirectory = "e:\Emulator's\ROMS\DS\Pokemon - HeartGold Version (U)"
+                    .InitialDirectory = "e:\Emulator's\ROMS\DS\Pokemon - HeartGold Version (U)"'This will be dynamic when project is finished
                 }
 
                 If saveFileDialog.ShowDialog() = DialogResult.OK Then
