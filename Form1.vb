@@ -27,34 +27,38 @@ Public Class Form1
 
                         ' Add description to code type line
                         outputLines.Add($"{codeType} {description}")
+
                     ElseIf line.StartsWith("AR 1") Or line.StartsWith("AR 0") Then
-                        Dim hexCodesAndDescription = line.Substring(4).Trim().Split({","c, ";"c}, StringSplitOptions.RemoveEmptyEntries)
-                        Dim hexCodes = hexCodesAndDescription.Take(hexCodesAndDescription.Length - 1).ToArray()
-                        Dim codeType = If(line.StartsWith("AR 1 "), "CODE 1", "CODE 0") ' Determine code type
-                        Dim description = hexCodesAndDescription.Last().Trim() ' Trim potential extra spaces
+                        Dim descriptionStartIndex = line.IndexOf(";") ' Find the start of the description
 
-                        ' Output code type and description with proper spacing
-                        outputLines.Add($"{codeType} {description}")
+                        If descriptionStartIndex >= 0 Then
+                            Dim hexCodesAndDescription = line.Substring(4, descriptionStartIndex - 4).Trim() ' Extract part before description
+                            Dim hexCodes = hexCodesAndDescription.Split({","c}, StringSplitOptions.RemoveEmptyEntries).ToArray() ' Split hex codes
+                            Dim codeType = If(line.StartsWith("AR 1 "), "CODE 1", "CODE 0") ' Determine code type
+                            Dim description = line.Substring(descriptionStartIndex + 1).Trim() ' Start after the ";"
+                            ' Output code type and description with proper spacing
+                            outputLines.Add($"{codeType} {description}")
 
-                        For Each hexCode As String In hexCodes
-                            Try
-                                ' Filter non-hexadecimal characters, allowing spaces within hex codes
-                                If hexCode.Replace(" ", "").All(Function(c) Char.IsDigit(c) OrElse Char.IsLetter(c)) Then
-                                    Dim substringLength = If(hexCode.Length > 18, 18, 8)
-                                    If hexCode.Length >= substringLength Then
-                                        outputLines.Add(hexCode.Substring(0, substringLength) + " " + hexCode.Substring(substringLength))
+                            For Each hexCode As String In hexCodes
+                                Try
+                                    ' Filter non-hexadecimal characters, allowing spaces within hex codes
+                                    If hexCode.Replace(" ", "").All(Function(c) Char.IsDigit(c) OrElse Char.IsLetter(c)) Then
+                                        Dim substringLength = If(hexCode.Length > 18, 18, 8)
+                                        If hexCode.Length >= substringLength Then
+                                            outputLines.Add(hexCode.Substring(0, substringLength) + " " + hexCode.Substring(substringLength))
+                                        Else
+                                            ' Handle the case where the string is too short (e.g., output the original hexCode or log a warning)
+                                        End If
                                     Else
-                                        ' Handle the case where the string is too short (e.g., output the original hexCode or log a warning)
+                                        ' Handle invalid hex code case
+                                        outputLines.Add(hexCode) ' Output the original hex code without marking it as invalid
+                                        invalidHexCodes.Add(hexCode) ' Add the invalid code to the list
                                     End If
-                                Else
-                                    ' Handle invalid hex code case
-                                    outputLines.Add(hexCode) ' Output the original hex code without marking it as invalid
-                                    invalidHexCodes.Add(hexCode) ' Add the invalid code to the list
-                                End If
-                            Catch ex As Exception
-                                outputLines.Add("Error processing hex code: " & ex.Message)
-                            End Try
-                        Next
+                                Catch ex As Exception
+                                    outputLines.Add("Error processing hex code: " & ex.Message)
+                                End Try
+                            Next
+                        End If
                         ' Output the code description separately, ensuring a whole line Is output
                         'outputLines.Add(hexCodesAndDescription.Last()) '' lined removed so description is not shown twice
                         outputLines.Add(Environment.NewLine) ' Add a new line for better readability
