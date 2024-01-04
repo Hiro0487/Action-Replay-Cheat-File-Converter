@@ -66,12 +66,12 @@ Public Class Form1
                         Next
                         outputLines.Add(Environment.NewLine)
                     End If
-                    next
-                    Dim saveFileDialog As New SaveFileDialog With {
-                    .Title = "Save Converted Cheat File",
-                    .Filter = "Cheat Files (*.MCH)|*.MCH",
-                    .InitialDirectory = "e:\Emulator's\ROMS\DS\Pokemon - HeartGold Version (U)"'This will be dynamic when project is finished
-                }
+                Next
+                Dim saveFileDialog As New SaveFileDialog With {
+                .Title = "Save Converted Cheat File",
+                .Filter = "Cheat Files (*.MCH)|*.MCH",
+                .InitialDirectory = "e:\Emulator's\ROMS\DS\Pokemon - HeartGold Version (U)"'This will be dynamic when project is finished
+            }
 
                 If saveFileDialog.ShowDialog() = DialogResult.OK Then
                     File.WriteAllLines(saveFileDialog.FileName, outputLines.ToArray())
