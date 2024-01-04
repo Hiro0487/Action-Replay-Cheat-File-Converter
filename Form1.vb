@@ -20,10 +20,16 @@ Public Class Form1
                 For Each line As String In lines
                     If line.StartsWith(";") Then
                         ' Add category name after code 0/1 with space and carriage return
-                        outputLines.Add(String.Format("CODE {0}{1} ", line.Substring(2).Trim(), Environment.NewLine))
-                    ElseIf line.StartsWith("AR 1 ") Then
+                        outputLines.Add(String.Format("CODE {0}{1}", line.Substring(2).Trim(), Environment.NewLine))
+                    ElseIf line.StartsWith("AR 1") Then
                         Dim hexCodesAndDescription = line.Substring(4).Trim().Split({","c, ";"c}, StringSplitOptions.RemoveEmptyEntries)
-                        Dim hexCodes = hexCodesAndDescription.Take(hexCodesAndDescription.Length - 1).ToArray() ' Separate hex codes from description
+                        Dim hexCodes = hexCodesAndDescription.Take(hexCodesAndDescription.Length - 1).ToArray()
+                        Dim codeType = If(line.StartsWith("AR 1 "), "CODE 1", "CODE 0") ' Determine code type
+                        Dim description = hexCodesAndDescription.Last().Trim() ' Trim potential extra spaces
+
+                        ' Output code type and description with proper spacing
+                        outputLines.Add($"{codeType} {description}")
+
                         For Each hexCode As String In hexCodes
                             Try
                                 ' Filter non-hexadecimal characters, allowing spaces within hex codes
@@ -40,7 +46,7 @@ Public Class Form1
                             End Try
                         Next
                         ' Output the code description separately, ensuring a whole line Is output
-                        outputLines.Add(hexCodesAndDescription.Last())
+                        'outputLines.Add(hexCodesAndDescription.Last()) '' lined removed so description is not shown twice
                         outputLines.Add(Environment.NewLine) ' Add a new line for better readability
                     Else
                         Dim hexCodes As String() = line.Split({","c, ";"c})
