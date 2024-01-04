@@ -17,14 +17,33 @@ Public Class Form1
                 Dim lines As String() = File.ReadAllLines(filePath).Skip(4).ToArray()
 
                 Dim outputLines As List(Of String) = New List(Of String)
-
                 For Each line As String In lines
                     If line.StartsWith(";") Then
                         ' Add category name after code 0/1 with space and carriage return
                         outputLines.Add(String.Format("CODE {0}{1} ", line.Substring(2).Trim(), Environment.NewLine))
+                    ElseIf line.StartsWith("AR 1 ") Then
+                        Dim hexCodesAndDescription = line.Substring(4).Trim().Split({","c, ";"c}, StringSplitOptions.RemoveEmptyEntries)
+                        Dim hexCodes = hexCodesAndDescription.Take(hexCodesAndDescription.Length - 1).ToArray() ' Separate hex codes from description
+                        For Each hexCode As String In hexCodes
+                            Try
+                                ' Filter non-hexadecimal characters, allowing spaces within hex codes
+                                If hexCode.Replace(" ", "").All(Function(c) Char.IsDigit(c) OrElse Char.IsLetter(c)) Then
+                                    Dim substringLength = If(hexCode.Length > 18, 18, 8)
+                                    outputLines.Add(hexCode.Substring(0, substringLength) + " " + hexCode.Substring(substringLength))
+                                Else
+                                    ' Handle invalid hex code case
+                                    outputLines.Add(hexCode) ' Output the original hex code without marking it as invalid
+                                    invalidHexCodes.Add(hexCode) ' Add the invalid code to the list
+                                End If
+                            Catch ex As Exception
+                                outputLines.Add("Error processing hex code: " & ex.Message)
+                            End Try
+                        Next
+                        ' Output the code description separately, ensuring a whole line Is output
+                        outputLines.Add(hexCodesAndDescription.Last())
+                        outputLines.Add(Environment.NewLine) ' Add a new line for better readability
                     Else
-                        ' Process hex codes until semicolon
-                        Dim hexCodes As String() = line.Split(",")
+                        Dim hexCodes As String() = line.Split({","c, ";"c})
                         For Each hexCode As String In hexCodes
                             Try
                                 ' Filter non-hexadecimal characters
@@ -41,9 +60,8 @@ Public Class Form1
                         Next
                         outputLines.Add(Environment.NewLine)
                     End If
-                Next
-
-                Dim saveFileDialog As New SaveFileDialog With {
+                    next
+                    Dim saveFileDialog As New SaveFileDialog With {
                     .Title = "Save Converted Cheat File",
                     .Filter = "Cheat Files (*.MCH)|*.MCH",
                     .InitialDirectory = "e:\Emulator's\ROMS\DS\Pokemon - HeartGold Version (U)"'This will be dynamic when project is finished
