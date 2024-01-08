@@ -22,6 +22,7 @@ Partial Class Form1
     'Do not modify it using the code editor.
     <System.Diagnostics.DebuggerStepThrough()>
     Private Sub InitializeComponent()
+        Dim resources As System.ComponentModel.ComponentResourceManager = New System.ComponentModel.ComponentResourceManager(GetType(Form1))
         OpenFileDialog1 = New OpenFileDialog()
         GroupBox1 = New GroupBox()
         Button2 = New Button()
@@ -94,6 +95,7 @@ Partial Class Form1
         Controls.Add(Button3)
         Controls.Add(GroupBox1)
         DoubleBuffered = True
+        Icon = CType(resources.GetObject("$this.Icon"), Icon)
         Name = "Form1"
         Text = "Form1"
         GroupBox1.ResumeLayout(False)
