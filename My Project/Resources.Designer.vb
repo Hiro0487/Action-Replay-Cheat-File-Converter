@@ -73,6 +73,16 @@ Namespace My.Resources
         '''<summary>
         '''  Looks up a localized resource of type System.Drawing.Bitmap.
         '''</summary>
+        Friend ReadOnly Property Convert_Button_Will_Appear() As System.Drawing.Bitmap
+            Get
+                Dim obj As Object = ResourceManager.GetObject("Convert Button Will Appear", resourceCulture)
+                Return CType(obj,System.Drawing.Bitmap)
+            End Get
+        End Property
+        
+        '''<summary>
+        '''  Looks up a localized resource of type System.Drawing.Bitmap.
+        '''</summary>
         Friend ReadOnly Property DeSumME_to_MelonDS() As System.Drawing.Bitmap
             Get
                 Dim obj As Object = ResourceManager.GetObject("DeSumME to MelonDS", resourceCulture)
@@ -116,6 +126,16 @@ Namespace My.Resources
         Friend ReadOnly Property MelonDS_to_DeSumME() As System.Drawing.Bitmap
             Get
                 Dim obj As Object = ResourceManager.GetObject("MelonDS to DeSumME", resourceCulture)
+                Return CType(obj,System.Drawing.Bitmap)
+            End Get
+        End Property
+        
+        '''<summary>
+        '''  Looks up a localized resource of type System.Drawing.Bitmap.
+        '''</summary>
+        Friend ReadOnly Property Provide_Game_Code() As System.Drawing.Bitmap
+            Get
+                Dim obj As Object = ResourceManager.GetObject("Provide Game Code", resourceCulture)
                 Return CType(obj,System.Drawing.Bitmap)
             End Get
         End Property
