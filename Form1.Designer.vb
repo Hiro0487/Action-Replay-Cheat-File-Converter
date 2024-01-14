@@ -42,7 +42,7 @@ Partial Class Form1
         GroupBox1.Controls.Add(Button1)
         GroupBox1.FlatStyle = FlatStyle.Flat
         GroupBox1.Font = New Font("Segoe UI", 18F, FontStyle.Bold Or FontStyle.Underline, GraphicsUnit.Point, CByte(0))
-        GroupBox1.ForeColor = SystemColors.Control
+        GroupBox1.ForeColor = Color.PaleGreen
         GroupBox1.Location = New Point(12, 0)
         GroupBox1.Name = "GroupBox1"
         GroupBox1.Size = New Size(288, 163)
@@ -68,6 +68,7 @@ Partial Class Form1
         Button1.BackgroundImage = My.Resources.Resources.DeSumME_to_MelonDS
         Button1.BackgroundImageLayout = ImageLayout.Stretch
         Button1.FlatStyle = FlatStyle.Popup
+        Button1.Image = My.Resources.Resources.DeSumME_to_MelonDS
         Button1.Location = New Point(6, 38)
         Button1.Name = "Button1"
         Button1.Size = New Size(276, 52)
@@ -77,13 +78,16 @@ Partial Class Form1
         ' 
         ' Button3
         ' 
+        Button3.BackColor = Color.Black
+        Button3.BackgroundImage = My.Resources.Resources.Close_Btn_From1
+        Button3.BackgroundImageLayout = ImageLayout.Stretch
         Button3.FlatStyle = FlatStyle.Popup
         Button3.Location = New Point(12, 169)
         Button3.Name = "Button3"
         Button3.Size = New Size(288, 66)
         Button3.TabIndex = 1
-        Button3.Text = "Button3"
-        Button3.UseVisualStyleBackColor = True
+        Button3.TextImageRelation = TextImageRelation.ImageAboveText
+        Button3.UseVisualStyleBackColor = False
         ' 
         ' Form1
         ' 
@@ -97,7 +101,7 @@ Partial Class Form1
         DoubleBuffered = True
         Icon = CType(resources.GetObject("$this.Icon"), Icon)
         Name = "Form1"
-        Text = "Form1"
+        Text = "Hiro's Cheat FIle Converter"
         GroupBox1.ResumeLayout(False)
         ResumeLayout(False)
     End Sub

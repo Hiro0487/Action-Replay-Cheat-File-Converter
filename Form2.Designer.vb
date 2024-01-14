@@ -89,7 +89,7 @@ Partial Class Frm2_melonDS_to_DeSmuMe
         ' Frm2_Close_Btn
         ' 
         Frm2_Close_Btn.ForeColor = Color.Black
-        Frm2_Close_Btn.Location = New Point(10, 265)
+        Frm2_Close_Btn.Location = New Point(10, 293)
         Frm2_Close_Btn.Name = "Frm2_Close_Btn"
         Frm2_Close_Btn.Size = New Size(307, 23)
         Frm2_Close_Btn.TabIndex = 5
@@ -99,9 +99,9 @@ Partial Class Frm2_melonDS_to_DeSmuMe
         ' Frm2_melonDS_Cvrt_DeSmuME_btn
         ' 
         Frm2_melonDS_Cvrt_DeSmuME_btn.ForeColor = Color.Black
-        Frm2_melonDS_Cvrt_DeSmuME_btn.Location = New Point(12, 236)
+        Frm2_melonDS_Cvrt_DeSmuME_btn.Location = New Point(10, 232)
         Frm2_melonDS_Cvrt_DeSmuME_btn.Name = "Frm2_melonDS_Cvrt_DeSmuME_btn"
-        Frm2_melonDS_Cvrt_DeSmuME_btn.Size = New Size(305, 23)
+        Frm2_melonDS_Cvrt_DeSmuME_btn.Size = New Size(305, 55)
         Frm2_melonDS_Cvrt_DeSmuME_btn.TabIndex = 6
         Frm2_melonDS_Cvrt_DeSmuME_btn.Text = "Convert"
         Frm2_melonDS_Cvrt_DeSmuME_btn.UseVisualStyleBackColor = True
@@ -109,10 +109,12 @@ Partial Class Frm2_melonDS_to_DeSmuMe
         ' Label1
         ' 
         Label1.AutoSize = True
-        Label1.ForeColor = Color.Black
-        Label1.Location = New Point(84, 187)
+        Label1.BackColor = Color.Transparent
+        Label1.Font = New Font("Segoe UI", 15.0F, FontStyle.Bold Or FontStyle.Underline)
+        Label1.ForeColor = Color.Cyan
+        Label1.Location = New Point(1, 173)
         Label1.Name = "Label1"
-        Label1.Size = New Size(179, 30)
+        Label1.Size = New Size(328, 56)
         Label1.TabIndex = 7
         Label1.Text = "Convert Button Will Appear " & vbCrLf & "After the above is properly Given" & vbCrLf
         ' 
@@ -122,7 +124,7 @@ Partial Class Frm2_melonDS_to_DeSmuMe
         AutoScaleMode = AutoScaleMode.Font
         BackgroundImage = My.Resources.Resources.FutureLoginModified
         BackgroundImageLayout = ImageLayout.Stretch
-        ClientSize = New Size(329, 300)
+        ClientSize = New Size(329, 319)
         ControlBox = False
         Controls.Add(Label1)
         Controls.Add(Frm2_melonDS_Cvrt_DeSmuME_btn)
