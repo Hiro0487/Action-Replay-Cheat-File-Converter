@@ -16,12 +16,8 @@ Public Class Frm2_melonDS_to_DeSmuMe
         Form1.Show()
     End Sub
 
-    Private Sub TextBox1_TextChanged(sender As Object, e As EventArgs) Handles TextBox1.TextChanged
-
-    End Sub
-
-    Private Sub TextBox2_TextChanged(sender As Object, e As EventArgs) Handles TextBox2.TextChanged
-
+    Private Sub HandleInputChanges(sender As Object, e As EventArgs) Handles TextBox1.TextChanged, MaskedTextBox1.TextChanged
+        ValidateFields()
     End Sub
 
     Private Sub Frm2_Close_Btn_Click(sender As Object, e As EventArgs) Handles Frm2_Close_Btn.Click
@@ -29,8 +25,20 @@ Public Class Frm2_melonDS_to_DeSmuMe
         Form1.Show()
     End Sub
 
+    Private Sub ValidateFields()
+        If TextBox1.Text.Trim <> "" AndAlso MaskedTextBox1.Text <> "" Then
+            Frm2_melonDS_Cvrt_DeSmuME_btn.Visible = True
+            PictureBox1.Visible = False ' Optimized visibility setting
+            Label1.Hide()
+        Else
+            Frm2_melonDS_Cvrt_DeSmuME_btn.Visible = False
+            PictureBox1.Visible = True ' Optimized visibility setting
+            ' Display an error message or feedback to the user
+            Label1.Show()
 
-    ' Start of Program Functions
+        End If
+    End Sub
+
     Private Function PromptUserForFile() As String
         Dim openFileDialog As New OpenFileDialog With {
             .Title = "Select Cheat File",
@@ -189,4 +197,5 @@ Public Class Frm2_melonDS_to_DeSmuMe
             ' Handle the case where the string is too short (e.g., output the original hexCode or log a warning)
         End If
     End Sub
+
 End Class

@@ -123,4 +123,47 @@
   <metadata name="ToolTip1.TrayLocation" type="System.Drawing.Point, System.Drawing, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a">
     <value>294, 17</value>
   </metadata>
+  <data name="Button1.ToolTip" xml:space="preserve">
+    <value>To Get Game Title
+1. Open Rom in MelonDS
+2. Click on menu bar
+3. Click on System
+4. Scroll down to ROM Info 
+5. Select ROM info
+6. Under General Information look for Game Title
+7. Game Title: {Game Title}
+</value>
+  </data>
+  <data name="Button2.ToolTip" xml:space="preserve">
+    <value>To Get Game Code
+1. Open Rom in MelonDS
+2. Click on menu bar
+3. Click on System
+4. Scroll down to ROM Info 
+5. Select ROM info
+6. Under General Information look for Game Title
+7. Game Title: {Game Code}
+</value>
+  </data>
+  <data name="MaskedTextBox1.ToolTip" xml:space="preserve">
+    <value>To Get Game Code
+1. Open Rom in MelonDS
+2. Click on menu bar
+3. Click on System
+4. Scroll down to ROM Info 
+5. Select ROM info
+6. Under General Information look for Game Title
+7. Game Code: {Game Code}
+</value>
+  </data>
+  <data name="TextBox1.ToolTip" xml:space="preserve">
+    <value>To Get Game Title
+1. Open Rom in MelonDS
+2. Click on menu bar
+3. Click on System
+4. Scroll down to ROM Info 
+5. Select ROM info
+6. Under General Information look for Game Title
+7. Game Title: {Game Title}</value>
+  </data>
 </root>
