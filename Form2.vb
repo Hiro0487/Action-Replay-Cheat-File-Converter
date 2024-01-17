@@ -111,8 +111,8 @@ Public Class Frm2_melonDS_to_DeSmuMe
     End Sub
 
     Private Sub GenerateDctHeader(outputLines As Object)
-        Dim gameTitle As String = TextBox1.Text
-        Dim gameCode As String = MaskedTextBox1.Text
+        Dim gameTitle As String = "POKEMON D" 'Dim gameTitle As String = TextBox1.Text
+        Dim gameCode As String = "ADAE" 'Dim gameCode As String = MaskedTextBox1.Text
 
         Dim headerLines As String() = {
         "; DeSmuME cheats file. VERSION 2.000",
@@ -181,7 +181,7 @@ Public Class Frm2_melonDS_to_DeSmuMe
 
     'Function Needs Modified to work with MCH File format to convert to DCT file format
     Private Function DetermineCodeType(line As String) As String
-        Return If(line.StartsWith("AR 1 "), "CODE 1", "CODE 0")
+        Return If(line.StartsWith("CODE 1 "), "AR 1", "AR 0")
     End Function
 
     'I don't think this function needs modifieds once all the other required functions are modified 

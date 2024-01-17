@@ -158,8 +158,9 @@ Partial Class Frm2_melonDS_to_DeSmuMe
         Controls.Add(Button1)
         DoubleBuffered = True
         ForeColor = Color.Transparent
+        Icon = CType(resources.GetObject("$this.Icon"), Icon)
         Name = "Frm2_melonDS_to_DeSmuMe"
-        Text = "Conversion Preview"
+        Text = "MelonDS to DeSumME "
         CType(PictureBox1, ComponentModel.ISupportInitialize).EndInit()
         ResumeLayout(False)
         PerformLayout()
