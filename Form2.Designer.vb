@@ -123,7 +123,7 @@ Partial Class Frm2_melonDS_to_DeSmuMe
         Label1.BackColor = Color.Transparent
         Label1.Font = New Font("Segoe UI", 15F, FontStyle.Bold Or FontStyle.Underline)
         Label1.ForeColor = Color.Cyan
-        Label1.Location = New Point(1, 173)
+        Label1.Location = New Point(0, 173)
         Label1.Name = "Label1"
         Label1.Size = New Size(328, 56)
         Label1.TabIndex = 7

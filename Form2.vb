@@ -2,10 +2,9 @@
 
 Public Class Frm2_melonDS_to_DeSmuMe
     Private Sub Frm2_melonDS_to_DeSmuMe_Load(sender As Object, e As EventArgs) Handles MyBase.Load
-        Frm2_melonDS_Cvrt_DeSmuME_btn.Visible = False
+        ValidateFields() ' Update UI based on initial validation
     End Sub
 
-    'Need to Get User Input before conversion takes place... So probly will be another funciton before it starts
     Private Sub Frm2_melonDS_Cvrt_DeSmuME_btn_Click(sender As Object, e As EventArgs) Handles Frm2_melonDS_Cvrt_DeSmuME_btn.Click
         Try
             ProcessCheatFile()
@@ -16,28 +15,39 @@ Public Class Frm2_melonDS_to_DeSmuMe
         Form1.Show()
     End Sub
 
-    Private Sub HandleInputChanges(sender As Object, e As EventArgs) Handles TextBox1.TextChanged, MaskedTextBox1.TextChanged
-        ValidateFields()
-    End Sub
-
     Private Sub Frm2_Close_Btn_Click(sender As Object, e As EventArgs) Handles Frm2_Close_Btn.Click
         Me.Hide()
         Form1.Show()
     End Sub
 
-    Private Sub ValidateFields()
-        If TextBox1.Text.Trim <> "" AndAlso MaskedTextBox1.Text <> "" Then
-            Frm2_melonDS_Cvrt_DeSmuME_btn.Visible = True
-            PictureBox1.Visible = False ' Optimized visibility setting
-            Label1.Hide()
-        Else
-            Frm2_melonDS_Cvrt_DeSmuME_btn.Visible = False
-            PictureBox1.Visible = True ' Optimized visibility setting
-            ' Display an error message or feedback to the user
-            Label1.Show()
+    Private Sub HandleInputChanges(sender As Object, e As EventArgs) Handles TextBox1.TextChanged, MaskedTextBox1.TextChanged
+        ValidateFields() ' Trigger validation on text changes
 
-        End If
     End Sub
+
+    Private Function ValidateFields() As Boolean
+        Try
+            Dim isValid As Boolean = False
+            If TextBox1.Text.Trim <> "" AndAlso MaskedTextBox1.MaskFull Then
+                Frm2_melonDS_Cvrt_DeSmuME_btn.Visible = isValid
+                MaskedTextBox1.ForeColor = Color.Green
+                Label1.Visible = False
+                Frm2_melonDS_Cvrt_DeSmuME_btn.Visible = True
+                Return isValid ' Boolean result for further use
+            Else
+                PictureBox1.Visible = Not isValid
+                Label1.Visible = Not isValid
+                MaskedTextBox1.ForeColor = Color.Red
+                Label1.Visible = True
+                Frm2_melonDS_Cvrt_DeSmuME_btn.Visible = False
+                Return isValid
+            End If
+        Catch ex As Exception
+            MsgBox("Exception occured: " & ex.Message)
+
+        End Try
+        ' Check if both fields are valid and update UI elements
+    End Function
 
     Private Function PromptUserForFile() As String
         Dim openFileDialog As New OpenFileDialog With {
@@ -53,13 +63,17 @@ Public Class Frm2_melonDS_to_DeSmuMe
         End If
     End Function
 
+
+
     Private Sub ProcessCheatFile()
         Dim invalidHexCodes As List(Of String) = New List(Of String)
 
         Dim filePath = PromptUserForFile()
         Dim lines = File.ReadAllLines(filePath).ToArray()
 
+
         Dim outputLines As List(Of String) = New List(Of String)
+        GenerateDctHeader(outputLines)
         For Each line As String In lines
             ProcessLine(line, outputLines, invalidHexCodes)
         Next
@@ -101,6 +115,19 @@ Public Class Frm2_melonDS_to_DeSmuMe
         outputLines.Add($"{codeType} {description}")
     End Sub
 
+    Private Sub GenerateDctHeader(outputLines As Object)
+        Dim gameTitle As String = TextBox1.Text
+        Dim gameCode As String = MaskedTextBox1.Text
+
+        Dim headerLines As String() = {
+        "; DeSmuME cheats file. VERSION 2.000",
+        "Name=" & gameTitle,
+        "Serial=NTR-" & gameCode & "-USA",
+         outputLines.Add(Environment.NewLine),
+        "; cheats list"
+    }
+        outputLines.InsertRange(0, headerLines) ' Prepend header lines to output
+    End Sub
     'Function Needs Modified to work with MCH File format to convert to DCT file format
     'this needs to convert ouput to codetype delimited by " ", Hexcodes delimited by "," ,Delimited by ";" Description.
     Private Sub ProcessCodeLine(line As String, outputLines As List(Of String), invalidHexCodes As List(Of String))
