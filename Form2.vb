@@ -26,27 +26,22 @@ Public Class Frm2_melonDS_to_DeSmuMe
     End Sub
 
     Private Function ValidateFields() As Boolean
-        Try
-            Dim isValid As Boolean = False
-            If TextBox1.Text.Trim <> "" AndAlso MaskedTextBox1.MaskFull Then
-                Frm2_melonDS_Cvrt_DeSmuME_btn.Visible = isValid
-                MaskedTextBox1.ForeColor = Color.Green
-                Label1.Visible = False
-                Frm2_melonDS_Cvrt_DeSmuME_btn.Visible = True
-                Return isValid ' Boolean result for further use
-            Else
-                PictureBox1.Visible = Not isValid
-                Label1.Visible = Not isValid
-                MaskedTextBox1.ForeColor = Color.Red
-                Label1.Visible = True
-                Frm2_melonDS_Cvrt_DeSmuME_btn.Visible = False
-                Return isValid
-            End If
-        Catch ex As Exception
-            MsgBox("Exception occured: " & ex.Message)
+        ' Check if both fields are valid and update UI elements accordingly
+        If TextBox1.Text.Trim <> "" AndAlso MaskedTextBox1.MaskFull Then
+            MaskedTextBox1.ForeColor = Color.Green
+            Label1.Visible = False
+            Frm2_melonDS_Cvrt_DeSmuME_btn.Visible = True
+            Return True
+        ElseIf Not TextBox1.Text.Trim <> "" OrElse Not MaskedTextBox1.MaskFull Then ' Handle invalid case
+            PictureBox1.Visible = True
+            Label1.Visible = True
+            MaskedTextBox1.ForeColor = Color.Red
+            Frm2_melonDS_Cvrt_DeSmuME_btn.Visible = False
+            Return False
+        End If
 
-        End Try
-        ' Check if both fields are valid and update UI elements
+        ' Final safeguard to ensure a value is always returned
+        Return False ' Or a more appropriate default value if applicable
     End Function
 
     Private Function PromptUserForFile() As String
