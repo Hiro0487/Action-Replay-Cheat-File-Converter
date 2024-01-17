@@ -63,9 +63,39 @@ Namespace My.Resources
         '''<summary>
         '''  Looks up a localized resource of type System.Drawing.Bitmap.
         '''</summary>
+        Friend ReadOnly Property Close_Btn_From1() As System.Drawing.Bitmap
+            Get
+                Dim obj As Object = ResourceManager.GetObject("Close Btn From1", resourceCulture)
+                Return CType(obj,System.Drawing.Bitmap)
+            End Get
+        End Property
+        
+        '''<summary>
+        '''  Looks up a localized resource of type System.Drawing.Bitmap.
+        '''</summary>
+        Friend ReadOnly Property Close_Button() As System.Drawing.Bitmap
+            Get
+                Dim obj As Object = ResourceManager.GetObject("Close Button", resourceCulture)
+                Return CType(obj,System.Drawing.Bitmap)
+            End Get
+        End Property
+        
+        '''<summary>
+        '''  Looks up a localized resource of type System.Drawing.Bitmap.
+        '''</summary>
         Friend ReadOnly Property ConsoleRetroCodeSequence() As System.Drawing.Bitmap
             Get
                 Dim obj As Object = ResourceManager.GetObject("ConsoleRetroCodeSequence", resourceCulture)
+                Return CType(obj,System.Drawing.Bitmap)
+            End Get
+        End Property
+        
+        '''<summary>
+        '''  Looks up a localized resource of type System.Drawing.Bitmap.
+        '''</summary>
+        Friend ReadOnly Property DeSmuME_to_melonDS() As System.Drawing.Bitmap
+            Get
+                Dim obj As Object = ResourceManager.GetObject("DeSmuME to melonDS", resourceCulture)
                 Return CType(obj,System.Drawing.Bitmap)
             End Get
         End Property
@@ -116,6 +146,36 @@ Namespace My.Resources
         Friend ReadOnly Property MelonDS_to_DeSumME() As System.Drawing.Bitmap
             Get
                 Dim obj As Object = ResourceManager.GetObject("MelonDS to DeSumME", resourceCulture)
+                Return CType(obj,System.Drawing.Bitmap)
+            End Get
+        End Property
+        
+        '''<summary>
+        '''  Looks up a localized resource of type System.Drawing.Bitmap.
+        '''</summary>
+        Friend ReadOnly Property Please_Input_Both_Fields() As System.Drawing.Bitmap
+            Get
+                Dim obj As Object = ResourceManager.GetObject("Please Input Both Fields", resourceCulture)
+                Return CType(obj,System.Drawing.Bitmap)
+            End Get
+        End Property
+        
+        '''<summary>
+        '''  Looks up a localized resource of type System.Drawing.Bitmap.
+        '''</summary>
+        Friend ReadOnly Property Provide_Game_Code() As System.Drawing.Bitmap
+            Get
+                Dim obj As Object = ResourceManager.GetObject("Provide Game Code", resourceCulture)
+                Return CType(obj,System.Drawing.Bitmap)
+            End Get
+        End Property
+        
+        '''<summary>
+        '''  Looks up a localized resource of type System.Drawing.Bitmap.
+        '''</summary>
+        Friend ReadOnly Property Provide_Game_Title() As System.Drawing.Bitmap
+            Get
+                Dim obj As Object = ResourceManager.GetObject("Provide Game Title", resourceCulture)
                 Return CType(obj,System.Drawing.Bitmap)
             End Get
         End Property
