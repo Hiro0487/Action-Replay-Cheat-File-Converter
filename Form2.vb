@@ -83,8 +83,8 @@ Public Class Frm2_melonDS_to_DeSmuMe
     'This Function Needs modified to work with MCH cheat file layout to convert to DCT Cheat File Layout
     Private Sub ProcessLine(line As String, outputLines As List(Of String), invalidHexCodes As List(Of String))
         Select Case True
-            Case line.StartsWith(";") : ProcessCommentLine(line, outputLines)
-            Case line.StartsWith("CODE 1") OrElse line.StartsWith("CODE 0") : ProcessCodeLine(line, outputLines, invalidHexCodes)
+            Case line.StartsWith(";cheats list") : ProcessCommentLine(line, outputLines)
+            Case line.StartsWith("CODE 0") OrElse line.StartsWith("CODE 1") : ProcessCodeLine(line, outputLines, invalidHexCodes)
             Case Else : ProcessHexCodeLine(line, outputLines, invalidHexCodes)
         End Select
     End Sub
@@ -134,8 +134,8 @@ Public Class Frm2_melonDS_to_DeSmuMe
         description = result.Description
         hexCodes = result.HexCodes
         Dim codeType = DetermineCodeType(line)
-        outputLines.Add($"{codeType} {description}")
         ProcessHexCodes(hexCodes, outputLines, invalidHexCodes)
+        outputLines.Add($"{codeType} ;{description}")
         outputLines.Add(Environment.NewLine)
     End Sub
 
@@ -169,12 +169,18 @@ Public Class Frm2_melonDS_to_DeSmuMe
 
     'Function Needs Modified to work with MCH File format to convert to DCT file format
     Private Function ExtractDescriptionAndHexCodes(line As String) As (Description As String, HexCodes As String())
-        Dim descriptionStartIndex = line.IndexOf(";")
-        If descriptionStartIndex >= 0 Then
-            Dim description = line.Substring(descriptionStartIndex + 1).Trim()
-            Dim hexCodesAndDescription = line.Substring(4, descriptionStartIndex - 4).Trim()
-            Dim hexCodes = hexCodesAndDescription.Split({","c}, StringSplitOptions.RemoveEmptyEntries).ToArray()
-            Return (description, hexCodes)
+        Dim codeStartIndex = line.IndexOf("CODE ")
+        If codeStartIndex >= 0 Then
+            Dim codeType = line.Substring(codeStartIndex + 5, 1).Trim() ' Get the code type (0 or 1)
+            If codeType = "0" OrElse codeType = "1" Then
+                Dim descriptionStartIndex = line.IndexOf(" ", codeStartIndex + 6) ' Find the space after "CODE 0" or "CODE 1"
+                If descriptionStartIndex >= 0 Then
+                    Dim description = line.Substring(descriptionStartIndex + 1).Trim()
+                    Dim hexCodesAndDescription = line.Substring(codeStartIndex + 6, descriptionStartIndex - codeStartIndex - 6).Trim()
+                    Dim hexCodes = hexCodesAndDescription.Split({","c}, StringSplitOptions.RemoveEmptyEntries).ToArray()
+                    Return (description, hexCodes)
+                End If
+            End If
         End If
         Return ("", {}) ' Return empty values if description and hex codes are not found
     End Function
