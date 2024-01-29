@@ -121,7 +121,7 @@ Partial Class Frm2_melonDS_to_DeSmuMe
         ' 
         Label1.AutoSize = True
         Label1.BackColor = Color.Transparent
-        Label1.Font = New Font("Segoe UI", 15F, FontStyle.Bold Or FontStyle.Underline)
+        Label1.Font = New Font("Segoe UI", 15.0F, FontStyle.Bold Or FontStyle.Underline)
         Label1.ForeColor = Color.Cyan
         Label1.Location = New Point(0, 173)
         Label1.Name = "Label1"
@@ -142,7 +142,7 @@ Partial Class Frm2_melonDS_to_DeSmuMe
         ' 
         ' Frm2_melonDS_to_DeSmuMe
         ' 
-        AutoScaleDimensions = New SizeF(7F, 15F)
+        AutoScaleDimensions = New SizeF(7.0F, 15.0F)
         AutoScaleMode = AutoScaleMode.Font
         BackgroundImage = My.Resources.Resources.FutureLoginModified
         BackgroundImageLayout = ImageLayout.Stretch
