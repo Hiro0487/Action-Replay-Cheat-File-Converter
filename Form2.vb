@@ -58,36 +58,48 @@ Public Class Frm2_melonDS_to_DeSmuMe
         End If
     End Function
 
-
-
     Private Sub ProcessCheatFile()
-        Dim invalidHexCodes As List(Of String) = New List(Of String)
-
         Dim filePath = PromptUserForFile()
-        Dim lines = File.ReadAllLines(filePath).ToArray()
+        If String.IsNullOrEmpty(filePath) Then Return
 
+        Dim outputLines As New List(Of String)
+        Dim invalidHexCodes As New List(Of String)
 
-        Dim outputLines As List(Of String) = New List(Of String)
         GenerateDctHeader(outputLines)
-        For Each line As String In lines
-            ProcessLine(line, outputLines, invalidHexCodes)
-        Next
+
+        Using reader As New StreamReader(filePath)
+            Dim line As String
+            While (InlineAssignHelper(line, reader.ReadLine())) IsNot Nothing
+                ProcessLine(line.Trim(), reader, outputLines, invalidHexCodes)
+            End While
+        End Using
 
         Dim saveFilePath = PromptUserForSaveFile()
-        File.WriteAllLines(saveFilePath, outputLines.ToArray())
-        MsgBox("Cheat file converted successfully.")
-
-        DisplayInvalidCodesMessage(invalidHexCodes)
+        If Not String.IsNullOrEmpty(saveFilePath) Then
+            File.WriteAllLines(saveFilePath, outputLines)
+            MsgBox("Cheat file converted successfully.")
+            DisplayInvalidCodesMessage(invalidHexCodes)
+        End If
     End Sub
+
+
+    Private Shared Function InlineAssignHelper(Of T)(ByRef target As T, value As T) As T
+        target = value
+        Return value
+    End Function
+
 
     'This Function Needs modified to work with MCH cheat file layout to convert to DCT Cheat File Layout
-    Private Sub ProcessLine(line As String, outputLines As List(Of String), invalidHexCodes As List(Of String))
-        Select Case True
-            Case line.StartsWith(";cheats list") : ProcessCommentLine(line, outputLines)
-            Case line.StartsWith("CODE 0") OrElse line.StartsWith("CODE 1") : ProcessCodeLine(line, outputLines, invalidHexCodes)
-            Case Else : ProcessHexCodeLine(line, outputLines, invalidHexCodes)
-        End Select
+    Private Sub ProcessLine(line As String, reader As StreamReader, outputLines As List(Of String), invalidHexCodes As List(Of String))
+        If String.IsNullOrWhiteSpace(line) Then Return
+        If line.StartsWith(";") Then
+            ProcessCommentLine(line, outputLines)
+        ElseIf line.StartsWith("CODE ") Then
+            ProcessCodeLine(line, reader, outputLines, invalidHexCodes)
+        End If
     End Sub
+
+
 
     'This Function Needs modified to work with MCH cheat file layout to convert to DCT Cheat File Layout, it requires user
     'Input for Game Title, and Game Code
@@ -101,48 +113,72 @@ Public Class Frm2_melonDS_to_DeSmuMe
     'also the cheat code block of all the cheat codes and hex codes starts with ;cheats list carriage return
     'then AR 1 or AR 0, Hexcodes in hexcode block, Description.
     Private Sub ProcessCommentLine(line As String, outputLines As List(Of String))
-
-        Dim hexCodesAndDescription = line.Substring(1).Trim().Split({","c, ";"c}, StringSplitOptions.RemoveEmptyEntries)
-        Dim codeType = If(line.StartsWith(";AR 1 "), "CODE 1", "CAT") ' Determine code type
-        Dim description = hexCodesAndDescription.Last().Trim() ' Trim potential extra spaces
-        description = description & Environment.NewLine
-        ' Add description to code type line
-        outputLines.Add($"{codeType} {description}")
+        outputLines.Add(line)
     End Sub
 
-    Private Sub GenerateDctHeader(outputLines As Object)
-        Dim gameTitle As String = "POKEMON D" 'Dim gameTitle As String = TextBox1.Text
-        Dim gameCode As String = "ADAE" 'Dim gameCode As String = MaskedTextBox1.Text
+
+    Private Sub GenerateDctHeader(outputLines As List(Of String))
+        Dim gameTitle As String = TextBox1.Text.Trim()
+        Dim gameCode As String = MaskedTextBox1.Text.Trim()
+
+        ' Use default values if the input is empty
+        If String.IsNullOrEmpty(gameTitle) Then gameTitle = "POKEMON D"
+        If String.IsNullOrEmpty(gameCode) Then gameCode = "ADAE"
 
         Dim headerLines As String() = {
         "; DeSmuME cheats file. VERSION 2.000",
-        "Name=" & gameTitle,
-        "Serial=NTR-" & gameCode & "-USA",
-         outputLines.Add(Environment.NewLine),
+        $"Name={gameTitle}",
+        $"Serial=NTR-{gameCode}-USA",
+        "",
         "; cheats list"
     }
-        outputLines.InsertRange(0, headerLines) ' Prepend header lines to output
+        outputLines.AddRange(headerLines)
     End Sub
+
+
     'Function Needs Modified to work with MCH File format to convert to DCT file format
     'this needs to convert ouput to codetype delimited by " ", Hexcodes delimited by "," ,Delimited by ";" Description.
-    Private Sub ProcessCodeLine(line As String, outputLines As List(Of String), invalidHexCodes As List(Of String))
-        ' ... (code for processing code lines, including category handling)
-        Dim description As String
-        Dim hexCodes As String()
-        ' Use a temporary variable to hold the tuple
-        Dim result = ExtractDescriptionAndHexCodes(line)
-        description = result.Description
-        hexCodes = result.HexCodes
-        Dim codeType = DetermineCodeType(line)
-        ProcessHexCodes(hexCodes, outputLines, invalidHexCodes)
-        outputLines.Add($"{codeType} ;{description}")
-        outputLines.Add(Environment.NewLine)
+    Private Sub ProcessCodeLine(line As String, reader As StreamReader, outputLines As List(Of String), invalidHexCodes As List(Of String))
+        Dim parts = line.Split(New Char() {" "c}, 3)
+        If parts.Length < 3 Then Return
+
+        Dim codeType = If(parts(1) = "1", "AR 1", "AR 0")
+        Dim description = parts(2)
+        Dim hexCodes = New List(Of String)()
+
+        ' Read the next 4 lines for hex codes
+        For i As Integer = 1 To 4
+            Dim hexLine = reader.ReadLine()
+            If Not String.IsNullOrWhiteSpace(hexLine) Then
+                hexCodes.Add(hexLine.Replace(" ", ""))
+            End If
+        Next
+
+        Dim formattedHexCodes = String.Join(",", hexCodes)
+        outputLines.Add($"{codeType} {formattedHexCodes} ;{description}")
     End Sub
 
-    Private Sub ProcessHexCodeLine(line As String, outputLines As List(Of String), invalidHexCodes As List(Of String))
-        ' ... (code for processing hex code lines)
 
-    End Sub
+
+    Private Function FormatHexCodes(hexCodes As String()) As String
+        Dim formattedCodes = New List(Of String)()
+        For i As Integer = 0 To hexCodes.Length - 1 Step 2
+            If i + 1 < hexCodes.Length Then
+                formattedCodes.Add(hexCodes(i) & hexCodes(i + 1))
+            Else
+                formattedCodes.Add(hexCodes(i))
+            End If
+        Next
+        Return String.Join(",", formattedCodes)
+    End Function
+
+    'Private Sub ProcessHexCodeLine(line As String, outputLines As List(Of String), invalidHexCodes As List(Of String))
+    'Dim hexCodes = line.Split(" "c)
+    'Dim formattedHexCodes = String.Join(",", hexCodes)
+    '   outputLines.Add(formattedHexCodes)
+    'End Sub
+
+
 
     'I don't think this function needs modifieds once all the other required functions are modified
     Private Function PromptUserForSaveFile() As String
@@ -169,42 +205,51 @@ Public Class Frm2_melonDS_to_DeSmuMe
 
     'Function Needs Modified to work with MCH File format to convert to DCT file format
     Private Function ExtractDescriptionAndHexCodes(line As String) As (Description As String, HexCodes As String())
-        Dim codeStartIndex = line.IndexOf("CODE ")
-        If codeStartIndex >= 0 Then
-            Dim codeType = line.Substring(codeStartIndex + 5, 1).Trim() ' Get the code type (0 or 1)
-            If codeType = "0" OrElse codeType = "1" Then
-                Dim descriptionStartIndex = line.IndexOf(" ", codeStartIndex + 6) ' Find the space after "CODE 0" or "CODE 1"
-                If descriptionStartIndex >= 0 Then
-                    Dim description = line.Substring(descriptionStartIndex + 1).Trim()
-                    Dim hexCodesAndDescription = line.Substring(codeStartIndex + 6, descriptionStartIndex - codeStartIndex - 6).Trim()
-                    Dim hexCodes = hexCodesAndDescription.Split({","c}, StringSplitOptions.RemoveEmptyEntries).ToArray()
-                    Return (description, hexCodes)
-                End If
-            End If
+        Dim parts = line.Split(New Char() {" "c}, 3)
+        If parts.Length < 3 Then Return ("", Array.Empty(Of String)())
+
+        Dim description = parts(2)
+        Dim hexCodes = New List(Of String)()
+
+        ' Extract hex codes
+        Dim hexCodeMatch = System.Text.RegularExpressions.Regex.Match(description, "^([0-9A-Fa-f\s]+)")
+        If hexCodeMatch.Success Then
+            hexCodes.AddRange(hexCodeMatch.Value.Trim().Split(" "c))
+            description = description.Substring(hexCodeMatch.Length).Trim()
         End If
-        Return ("", {}) ' Return empty values if description and hex codes are not found
+
+        Return (description, hexCodes.ToArray())
     End Function
+
+
 
     'Function Needs Modified to work with MCH File format to convert to DCT file format
     Private Function DetermineCodeType(line As String) As String
-        Return If(line.StartsWith("CODE 1 "), "AR 1", "AR 0")
+        Return If(line.StartsWith("AR 1"), "CODE 1", "CODE 0")
     End Function
 
+
     'I don't think this function needs modifieds once all the other required functions are modified 
-    Private Sub ProcessHexCodes(hexCodes As String(), outputLines As List(Of String), invalidHexCodes As List(Of String))
+    Private Sub ProcessHexCodes(hexCodes As String(), outputLines As List(Of String), invalidHexCodes As List(Of String), description As String)
+        Dim processedCodes As New List(Of String)
+
         For Each hexCode As String In hexCodes
             Try
                 If IsValidHexCode(hexCode) Then
-                    ProcessValidHexCode(hexCode, outputLines)
+                    processedCodes.Add(hexCode)
                 Else
-                    outputLines.Add(hexCode)
                     invalidHexCodes.Add(hexCode)
                 End If
             Catch ex As Exception
                 outputLines.Add("Error processing hex code: " & ex.Message)
             End Try
         Next
+
+        If processedCodes.Count > 0 Then
+            ProcessValidHexCode(processedCodes.ToArray(), outputLines, description)
+        End If
     End Sub
+
 
     'Function Needs Modified to work with MCH File format to convert to DCT file format
     Private Function IsValidHexCode(hexCode As String) As Boolean
@@ -217,13 +262,19 @@ Public Class Frm2_melonDS_to_DeSmuMe
     'so i assume it will loop until a black carriage return is reached then proccede to next hex code block if exist
     'after which the description needs to be added witt ; at the beginning followed by description
     'eg, {All HEX codes in block} ;{Description} ended with a carriage return.
-    Private Sub ProcessValidHexCode(hexCode As String, outputLines As List(Of String))
-        Dim substringLength = If(hexCode.Length > 18, 18, 8)
-        If hexCode.Length >= substringLength Then
-            outputLines.Add(hexCode.Substring(0, substringLength) + " " + hexCode.Substring(substringLength))
-        Else
-            ' Handle the case where the string is too short (e.g., output the original hexCode or log a warning)
-        End If
+    Private Sub ProcessValidHexCode(hexCodes As String(), outputLines As List(Of String), description As String)
+        Dim processedCodes As New List(Of String)
+
+        For i As Integer = 0 To hexCodes.Length - 1 Step 2
+            If i + 1 < hexCodes.Length Then
+                processedCodes.Add(hexCodes(i) & hexCodes(i + 1))
+            Else
+                processedCodes.Add(hexCodes(i))
+            End If
+        Next
+
+        outputLines.Add(String.Join(",", processedCodes) & " ;" & description)
     End Sub
+
 
 End Class
